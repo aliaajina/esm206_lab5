@@ -88,4 +88,58 @@ The p-value of `r trees_t$p.value` means that there is a significant distance in
 
 or...means that there is a `r (trees_t$p.value)*100`% chance of finding sample means *at least as different as those I found* by random chance if they were drawn from populations with the same mean height.
 
-We would reject the null hypothesis 
+## Example 2
+
+Using the `mpg` dataset to compare city gas mileage for SUVs and compact cars.
+
+There are many ways that you could write these tests, 
+
+```{r}
+# Create a subset called compact_suv that only contains observations where the class is suv OR compact
+
+compact_suv <- mpg %>% 
+  filter(class %in% c("suv", "compact"))
+
+```
+
+Make sure you think a t-test is appropriate
+Create side by side histograms and side by side quantile quantile plots
+
+```{r}
+ggplot(data = compact_suv, aes(x = cty)) + 
+  geom_histogram(bins = 12) + 
+  facet_wrap(~ class)
+
+ggplot(data = compact_suv, aes(sample = cty)) + 
+  geom_qq() + 
+  facet_wrap(~ class)
+```
+
+```{r}
+car_stats <- compact_suv %>% 
+  group_by(class) %>% 
+  summarize(mean_city = mean(cty),
+sd_cty = round(sd(cty), 2),
+sample_size = n())
+
+car_stats
+```
+Try not to round things before you get to a place where you want a final product
+
+```{r}
+compact_sample <- compact_suv %>% 
+  filter(class == "compact") %>% 
+  pull(cty)
+
+suv_sample <- compact_suv %>% 
+  filter(class == "suv") %>% 
+  pull(cty)
+
+cars_t <- t.test(compact_sample, suv_sample)
+```
+
+Stats speak: reject the null hypothesis of equal mean city gas mileages
+
+In report: Mean gas mileage for compact cars and SUVs differes significantly (t(`r cars_t$parameter`) = `r cars_t$statistic`, p < 0.001, $\alpha$ = 0.05). 
+
+This needs to be presented along with other values like mean, etc.
