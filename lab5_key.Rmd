@@ -73,10 +73,19 @@ This is a two-sided t-test because no directionality is implied.
 ## Examples 1
 
 ```{r}
-oak_tress <- c(29, 19, 22, 39, 35, 16, 20, 7)
+oak_trees <- c(29, 19, 22, 39, 35, 16, 20, 7)
 
 pine_trees <- c(48, 32, 41, 40, 56, 70, 30, 19, 20)
 ```
 
 Is there a significant difference in mean heights for oak and pine trees?
 
+```{r}
+trees_t <- t.test(oak_trees, pine_trees)
+```
+
+The p-value of `r trees_t$p.value` means that there is a significant distance in mean heights for oak and pine trees so we reject the null hypothesis, since it is less than 0.05.
+
+or...means that there is a `r (trees_t$p.value)*100`% chance of finding sample means *at least as different as those I found* by random chance if they were drawn from populations with the same mean height.
+
+We would reject the null hypothesis 
